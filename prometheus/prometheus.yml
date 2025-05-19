@@ -1,0 +1,42 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load and evaluate rules
+rule_files:
+  # - "first_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Configuración para recolectar métricas de Airflow
+  - job_name: "airflow"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["airflow-webserver:8080"]
+
+  # Configuración para recolectar métricas de PostgreSQL
+  - job_name: "postgres"
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+
+  # Configuración para recolectar métricas de nuestro modelo
+  # Asumiendo que tenemos un exportador personalizado
+  - job_name: "churn_model"
+    static_configs:
+      - targets: ["churn-metrics-exporter:8000"]
+    
+  # Configuración para recolectar métricas de los contenedores Docker
+  - job_name: "docker"
+    static_configs:
+      - targets: ["cadvisor:8080"]
